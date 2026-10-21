@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+  <div class="row">
+    <h1>{{ project.name }}</h1>
+    <div>
+      <a class="button-link" href="{{ url_for('projects.task_create', project_id=project.id) }}">Add Task</a>
+      <a class="button-link secondary" href="{{ url_for('projects.project_edit', project_id=project.id) }}">Edit Project</a>
+    </div>
+  </div>
+  <p>{{ project.description or 'No description.' }}</p>
+
+  <form method="get" class="row">
+    <div>
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="all" {{ 'selected' if status_filter == 'all' else '' }}>All</option>
+        {% for status in statuses %}
+          <option value="{{ status }}" {{ 'selected' if status_filter == status else '' }}>{{ status.replace('_', ' ').title() }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="sort">Sort</label>
+      <select id="sort" name="sort">
+        <option value="created_at" {{ 'selected' if sort == 'created_at' else '' }}>Newest</option>
+        <option value="priority" {{ 'selected' if sort == 'priority' else '' }}>Priority</option>
+        <option value="status" {{ 'selected' if sort == 'status' else '' }}>Status</option>
+        <option value="due_date" {{ 'selected' if sort == 'due_date' else '' }}>Due date</option>
+      </select>
+    </div>
+    <div><button type="submit">Apply</button></div>
+  </form>
+
+  {% if tasks %}
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Status</th><th>Priority</th><th>Due</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr>
+        <td><a href="{{ url_for('projects.task_detail', task_id=task.id) }}">{{ task.title }}</a></td>
+        <td>{{ task.status.replace('_', ' ').title() }}</td>
+        <td>{{ task.priority.title() }}</td>
+        <td>{{ task.due_date or '—' }}</td>
+        <td>
+          <a class="button-link secondary" href="{{ url_for('projects.task_edit', task_id=task.id) }}">Edit</a>
+          <form class="inline" method="post" action="{{ url_for('projects.task_delete', task_id=task.id) }}">
+            <button class="secondary" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>No tasks for this project.</p>
+  {% endif %}
+{% endblock %}

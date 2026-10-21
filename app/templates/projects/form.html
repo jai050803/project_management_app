@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit Project' if project else 'New Project' }}{% endblock %}
+{% block content %}
+  <h1>{{ 'Edit Project' if project else 'New Project' }}</h1>
+  <form method="post">
+    <label for="name">Name</label>
+    <input id="name" name="name" required value="{{ request.form.name if request.method == 'POST' else (project.name if project else '') }}">
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4">{{ request.form.description if request.method == 'POST' else (project.description if project else '') }}</textarea>
+
+    <button type="submit">Save Project</button>
+    <a class="button-link secondary" href="{{ url_for('projects.project_list') }}">Cancel</a>
+  </form>
+{% endblock %}
