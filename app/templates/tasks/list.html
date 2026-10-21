@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+  <div class="row">
+    <h1>Tasks</h1>
+    <div><a class="button-link" href="{{ url_for('projects.task_create') }}">Create Task</a></div>
+  </div>
+
+  {% if tasks %}
+    <table>
+      <thead>
+        <tr><th>Title</th><th>Project</th><th>Status</th><th>Priority</th><th>Due</th></tr>
+      </thead>
+      <tbody>
+      {% for task in tasks %}
+        <tr>
+          <td><a href="{{ url_for('projects.task_detail', task_id=task.id) }}">{{ task.title }}</a></td>
+          <td><a href="{{ url_for('projects.project_detail', project_id=task.project.id) }}">{{ task.project.name }}</a></td>
+          <td>{{ task.status.replace('_', ' ').title() }}</td>
+          <td>{{ task.priority.title() }}</td>
+          <td>{{ task.due_date or '—' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No tasks yet.</p>
+  {% endif %}
+{% endblock %}

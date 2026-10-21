@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }}{% endblock %}
+{% block content %}
+  <h1>{{ task.title }}</h1>
+  <p><strong>Project:</strong> <a href="{{ url_for('projects.project_detail', project_id=task.project.id) }}">{{ task.project.name }}</a></p>
+  <p><strong>Status:</strong> {{ task.status.replace('_', ' ').title() }}</p>
+  <p><strong>Priority:</strong> {{ task.priority.title() }}</p>
+  <p><strong>Due date:</strong> {{ task.due_date or '—' }}</p>
+  <p><strong>Description:</strong> {{ task.description or 'No description.' }}</p>
+
+  <a class="button-link secondary" href="{{ url_for('projects.task_edit', task_id=task.id) }}">Edit Task</a>
+  <form class="inline" method="post" action="{{ url_for('projects.task_delete', task_id=task.id) }}">
+    <button class="secondary" type="submit">Delete Task</button>
+  </form>
+{% endblock %}

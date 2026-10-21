@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit Task' if task else 'New Task' }}{% endblock %}
+{% block content %}
+  <h1>{{ 'Edit Task' if task else 'New Task' }}</h1>
+
+  <form method="post">
+    {% set form_source = form_data if form_data else {} %}
+    <label for="title">Title</label>
+    <input id="title" name="title" required value="{{ form_source.get('title', task.title if task else '') }}">
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4">{{ form_source.get('description', task.description if task else '') }}</textarea>
+
+    <div class="row">
+      <div>
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          {% for status in statuses %}
+            {% set selected_status = form_source.get('status', task.status if task else 'todo') %}
+            <option value="{{ status }}" {{ 'selected' if selected_status == status else '' }}>{{ status.replace('_', ' ').title() }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority">
+          {% for priority in priorities %}
+            {% set selected_priority = form_source.get('priority', task.priority if task else 'medium') %}
+            <option value="{{ priority }}" {{ 'selected' if selected_priority == priority else '' }}>{{ priority.title() }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="due_date">Due date</label>
+        {% set selected_due_date = form_source.get('due_date', task.due_date.isoformat() if task and task.due_date else '') %}
+        <input id="due_date" name="due_date" type="date" value="{{ selected_due_date }}">
+      </div>
+
+      <div>
+        <label for="project_id">Project</label>
+        {% set selected_project = form_source.get('project_id', task.project_id if task else '') %}
+        <select id="project_id" name="project_id" required>
+          <option value="">Select project</option>
+          {% for project in projects %}
+            <option value="{{ project.id }}" {{ 'selected' if selected_project|string == project.id|string else '' }}>{{ project.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <button type="submit">Save Task</button>
+    <a class="button-link secondary" href="{{ url_for('projects.task_list') }}">Cancel</a>
+  </form>
+{% endblock %}
